@@ -1,0 +1,29 @@
+#cloud-config
+
+hostname: k0s-control-plane
+
+package_update: true
+packages:
+  - vim
+  - net-tools
+
+write_files:
+  - path: /etc/systemd/system/k0s.service
+    content: |
+        [Unit]
+        Description = k0s server
+
+        [Service]
+        ExecStart = /usr/local/bin/k0s server
+        Restart = always
+        Type = simple
+
+        [Install]
+        WantedBy = multi-user.target
+    permissions: '755'
+
+runcmd:
+  - |
+    curl -sSLf get.k0s.sh | sudo sh
+    sudo systemctl enable k0s
+    sudo systemctl start k0s

@@ -1,0 +1,33 @@
+#cloud-config
+
+hostname: k0s-worker-node01
+
+package_update: true
+packages:
+  - vim
+  - net-tools
+
+write_files:
+  - path: /etc/systemd/system/k0s.service
+    content: |
+        [Unit]
+        Description = k0s worker
+
+        [Service]
+        ExecStart = /usr/local/bin/k0s worker --token-file /etc/k0s/k0s.token
+        Restart = always
+        Type = simple
+
+        [Install]
+        WantedBy = multi-user.target
+    permissions: '755'
+  - path: /etc/k0s/k0s.token
+    content: |
+        <token>
+    permissions: '775'
+
+runcmd:
+  - |
+    curl -sSLf get.k0s.sh | sudo sh
+    sudo systemctl start k0s
+
