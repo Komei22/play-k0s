@@ -29,5 +29,6 @@ write_files:
 runcmd:
   - |
     curl -sSLf get.k0s.sh | sudo sh
+    sudo systemctl enable k0s
     sudo systemctl start k0s
 
